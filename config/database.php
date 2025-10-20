@@ -4,7 +4,7 @@ class Database {
     private $db_name = "student_management_db";
     private $username = "zeyadwael11";
     private $password = "zezowael11";
-    public $conn = null;
+    public $conn;
 
     public function __construct() {
         try {
@@ -12,7 +12,7 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->exec("set names utf8");
         } catch (PDOException $exception) {
-            echo "Connection error: " . $exception->getMessage();
+            die("Connection error: " . $exception->getMessage());
         }
     }
 }
