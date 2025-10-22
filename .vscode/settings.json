@@ -1,0 +1,20 @@
+{
+    // Reduce UI overlays and animations to troubleshoot typing flicker
+    "editor.inlineSuggest.enabled": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.quickSuggestions": {
+        "other": false,
+        "comments": false,
+        "strings": false
+    },
+    "editor.cursorBlinking": "solid",
+    "editor.cursorSmoothCaretAnimation": "off",
+    "editor.minimap.enabled": false,
+    "editor.renderWhitespace": "none",
+    "editor.renderControlCharacters": false,
+    "editor.guides.bracketPairs": false,
+    "workbench.editor.enablePreview": false,
+    // force software rendering fallback by disabling GPU acceleration for the window
+    // Note: this takes effect after a restart of VS Code
+    "disable-hardware-acceleration": true
+}

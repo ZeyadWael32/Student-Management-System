@@ -1,5 +1,5 @@
 <?php
-require_once 'database.php';
+require_once __DIR__ . '/../config/init.php';
 
 class User {
     private $conn;
@@ -22,7 +22,7 @@ class User {
     }
 
     public function register($username, $password, $email, $role) {
-        if ($this->existsbyEmail($email)) {
+        if ($this->existsByEmail($email)) {
             return false; // User already exists
         } else {
 

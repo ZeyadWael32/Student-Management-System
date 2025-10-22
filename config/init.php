@@ -1,4 +1,8 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 class Database {
     private $host = "localhost";
     private $db_name = "student_management_db";
