@@ -1,9 +1,9 @@
 {
     // Reduce UI overlays and animations to troubleshoot typing flicker
-    "editor.inlineSuggest.enabled": false,
+    "editor.inlineSuggest.enabled": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.quickSuggestions": {
-        "other": false,
+        "other": true,
         "comments": false,
         "strings": false
     },
@@ -17,4 +17,68 @@
     // force software rendering fallback by disabling GPU acceleration for the window
     // Note: this takes effect after a restart of VS Code
     "disable-hardware-acceleration": true
+    ,
+    // PHP and Intelephense settings for better Intellisense
+    "php.validate.executablePath": "D:\\xampp\\php\\php.exe",
+    "intelephense.environment.phpVersion": "8.0.0",
+    "intelephense.files.maxSize": 5000000,
+    "intelephense.diagnostics.undefinedFunctions": true,
+    "intelephense.diagnostics.undefinedTypes": true
+    ,
+    // Help Intelephense index project files
+    "intelephense.environment.includePaths": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/classes",
+        "${workspaceFolder}/includes",
+        "${workspaceFolder}/config",
+        "${workspaceFolder}/public"
+    ],
+    "intelephense.files.associations": ["*.php"],
+    "intelephense.stubs": [
+        "apache",
+        "bcmath",
+        "bz2",
+        "calendar",
+        "com_dotnet",
+        "Core",
+        "curl",
+        "date",
+        "dba",
+        "dom",
+        "enchant",
+        "filter",
+        "ftp",
+        "gd",
+        "hash",
+        "iconv",
+        "json",
+        "libxml",
+        "mbstring",
+        "mcrypt",
+        "mysql",
+        "mysqli",
+        "openssl",
+        "pcre",
+        "PDO",
+        "pdo_mysql",
+        "Phar",
+        "posix",
+        "pspell",
+        "simplexml",
+        "sockets",
+        "SPL",
+        "sqlite3",
+        "tokenizer",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "zip",
+        "zlib"
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/node_modules": true,
+        "**/vendor": false
+    }
 }

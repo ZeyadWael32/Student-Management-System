@@ -16,10 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Passwords do not match";
     } elseif (strlen($password) < 6) {
         echo "Password must be at least 6 characters long.";
-    } elseif ($user->existsByEmail($email)) {
-        echo "Email already registered.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "Invalid email format.";
+    } elseif ($user->existsByEmail($email)) {
+        echo "Email already registered.";
     } else {
         if ($user->register($name, $password, $email, $role)) {
             $loggedInUser = $user->login($email, $password); // Auto-login
@@ -33,17 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             switch ($loggedInUser['role']) {
                 case 'student':
-                    header("Location: ../views/student/dashboard.php");
-                    break;
+                    header("Location: ../../views/student/dashboard.php");
+                    exit;
                 case 'teacher':
-                    header("Location: ../views/teacher/dashboard.php");
-                    break;
+                    header("Location: ../../views/teacher/dashboard.php");
+                    exit;
                 case 'admin':
-                    header("Location: ../views/admin/dashboard.php");
-                    break;
+                    header("Location: ../../views/admin/dashboard.php");
+                    exit;
                 default:
-                    header("Location: ../public/index.php");
-                    break;
+                    header("Location: ../../public/index.php");
+                    exit;
             }
 
         } else {

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/init.php';
 
 class User {
-    private $conn;
+    protected $conn;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -12,7 +12,7 @@ class User {
         $query = "SELECT id FROM users WHERE email = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(1, $email);
+        $stmt->bindParam(1, $email, PDO::PARAM_STR);
 
         if ($stmt->execute()) {
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -31,18 +31,36 @@ class User {
 
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
             
-            $stmt->bindParam(1, $username);
-            $stmt->bindParam(2, $hashed_password);
-            $stmt->bindParam(3, $email);
-            $stmt->bindParam(4, $role);
+            $stmt->bindParam(1, $username, PDO::PARAM_STR);
+            $stmt->bindParam(2, $hashed_password, PDO::PARAM_STR);
+            $stmt->bindParam(3, $email, PDO::PARAM_STR);
+            $stmt->bindParam(4, $role, PDO::PARAM_STR);
+
 
             if ($stmt->execute()) {
+                $user_id = $this->conn->lastInsertId();
+
+                // Insert into role-specific table
+                if ($role === 'teacher') {
+                    $roleQuery = "INSERT INTO teachers (user_id) VALUES (:user_id)";
+                } elseif ($role === 'student') {
+                    $roleQuery = "INSERT INTO students (user_id) VALUES (:user_id)";
+                } else {
+                    $roleQuery = null;
+                }
+
+                if ($roleQuery) {
+                    $stmtRole = $this->conn->prepare($roleQuery);
+                    $stmtRole->bindParam(":user_id", $user_id);
+                    $stmtRole->execute();
+                }
+
                 return true;
             } else {
                 return false;
             }
-        }
     }
+}
     
     public function login($email, $password) {
         $query = "SELECT * FROM users WHERE email = ?";

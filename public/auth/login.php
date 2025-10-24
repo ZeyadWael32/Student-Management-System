@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../classes/user.php';
 $db = new Database();
 $user = new User($db->conn);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $email = strtolower(trim($_POST['email']));
     $password = $_POST['password'];
 
@@ -50,7 +50,7 @@ include __DIR__ . '/../../includes/header.php';
             <label class="form-label">Password</label>
             <input type="password" name="password" class="form-control" placeholder="Enter your password..." required>
         </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" name="submit" class="btn btn-primary">Login</button>
         <button type="reset" class="btn btn-secondary">Reset</button>
     </form>
 </main>

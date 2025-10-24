@@ -54,13 +54,18 @@
             color: #2c3e50;
         }
     </style>
+    <?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    ?>
     <nav class="top-navbar">
         <a href="#" class="navbar-brand">
-            <i class="bi bi-mortarboard-fill"></i> Student Dashboard
+            <i class="bi bi-mortarboard-fill"></i> Student Management System
         </a>
         
         <div class="user-profile">
-            <span class="user-name">John Smith</span>
-            <div class="user-avatar">JS</div>
+            <span class="user-name"><?php echo isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest'; ?></span>
+            <div class="user-avatar"><?php echo isset($_SESSION['user_name']) ? strtoupper(substr(htmlspecialchars($_SESSION['user_name']),0,2)) : 'NA'; ?></div>
         </div>
     </nav>

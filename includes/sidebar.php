@@ -60,28 +60,37 @@
    <aside class="sidebar">
         <ul class="sidebar-menu">
             <li class="sidebar-item">
-                <a href="#" class="sidebar-link active">
+                <a href="dashboard.php" class="sidebar-link active">
                     <i class="bi bi-house-door-fill"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
-            
+
+        <?php if ($_SESSION['user_role'] === 'teacher'): ?>
             <li class="sidebar-item">
-                <a href="#" class="sidebar-link">
+                <a href="students.php" class="sidebar-link">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+            <li class="sidebar-item">
+                <a href="courses.php" class="sidebar-link">
                     <i class="bi bi-book-fill"></i>
                     <span>Courses</span>
                 </a>
             </li>
             
             <li class="sidebar-item">
-                <a href="#" class="sidebar-link">
+                <a href="grades.php" class="sidebar-link">
                     <i class="bi bi-graph-up"></i>
                     <span>Grades</span>
                 </a>
             </li>
             
             <li class="sidebar-item">
-                <a href="#" class="sidebar-link">
+                <a href="profile.php" class="sidebar-link">
                     <i class="bi bi-person-circle"></i>
                     <span>Profile</span>
                 </a>

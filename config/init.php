@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
+require_once "session_check.php";
 class Database {
     private $host = "localhost";
     private $db_name = "student_management_db";
