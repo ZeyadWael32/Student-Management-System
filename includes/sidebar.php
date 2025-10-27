@@ -12,7 +12,7 @@
         /* Sidebar */
         .sidebar {
             position: fixed;
-            top: 1;
+            margin-top: 60px;
             left: 0;
             width: 260px;
             height: 100vh;
@@ -58,42 +58,128 @@
         }
 </style> 
    <aside class="sidebar">
-        <ul class="sidebar-menu">
-            <li class="sidebar-item">
-                <a href="dashboard.php" class="sidebar-link active">
-                    <i class="bi bi-house-door-fill"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
+        <?php if ($_SESSION['user_role'] === 'admin'): ?>
 
-        <?php if ($_SESSION['user_role'] === 'teacher'): ?>
-            <li class="sidebar-item">
-                <a href="students.php" class="sidebar-link">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Students</span>
-                </a>
-            </li>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="dashboard.php" class="sidebar-link">
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="manage_students.php" class="sidebar-link">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Manage Students</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="manage_teachers.php" class="sidebar-link">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span>Manage Teachers</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="manage_courses.php" class="sidebar-link">
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                        <span>Manage Courses</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="manage_grades.php" class="sidebar-link">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <span>Manage Grades</span>
+                    </a>
+                </li>
+            </ul>
+
+        <?php elseif ($_SESSION['user_role'] === 'teacher'): ?>
+
+            <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="dashboard.php" class="sidebar-link">
+                            <i class="bi bi-house-door-fill"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a href="students.php" class="sidebar-link">
+                            <i class="bi bi-people-fill"></i>
+                            <span>Students</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a href="courses.php" class="sidebar-link">
+                            <i class="bi bi-book-fill"></i>
+                            <span>Courses</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-item">
+                        <a href="grades.php" class="sidebar-link">
+                            <i class="bi bi-graph-up"></i>
+                            <span>Grades</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-item">
+                        <a href="profile.php" class="sidebar-link">
+                            <i class="bi bi-person-circle"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                </ul>
+
+        <?php elseif ($_SESSION['user_role'] === 'student'): ?>
+
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="dashboard.php" class="sidebar-link">
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="courses.php" class="sidebar-link">
+                        <i class="bi bi-book-fill"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="grades.php" class="sidebar-link">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Grades</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="profile.php" class="sidebar-link">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
         <?php endif; ?>
-
-            <li class="sidebar-item">
-                <a href="courses.php" class="sidebar-link">
-                    <i class="bi bi-book-fill"></i>
-                    <span>Courses</span>
-                </a>
-            </li>
-            
-            <li class="sidebar-item">
-                <a href="grades.php" class="sidebar-link">
-                    <i class="bi bi-graph-up"></i>
-                    <span>Grades</span>
-                </a>
-            </li>
-            
-            <li class="sidebar-item">
-                <a href="profile.php" class="sidebar-link">
-                    <i class="bi bi-person-circle"></i>
-                    <span>Profile</span>
-                </a>
-            </li>
-        </ul>
     </aside>
+<script>
+    // Highlight the active link in the sidebar
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop();
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        sidebarLinks.forEach(link => {
+            const linkPage = link.getAttribute('href');
+            if (linkPage === currentPage) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>

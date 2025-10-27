@@ -14,7 +14,7 @@
             top: 0;
             width: 100%;
             height: 60px;
-            background: #fff;
+            background: #2c3e50;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             z-index: 1000;
             display: flex;
@@ -26,7 +26,7 @@
         .navbar-brand {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: #ecf0f1;
             text-decoration: none;
         }
 
@@ -51,7 +51,7 @@
 
         .user-name {
             font-weight: 500;
-            color: #2c3e50;
+            color: #ecf0f1;
         }
     </style>
     <?php
