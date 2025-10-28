@@ -2,25 +2,151 @@
 require_once 'user.php';
 
 class Teacher extends User {
-    public function getAssignedStudents() {
-        $query = "
-            SELECT u.id, u.username, u.email
-            FROM users u
-            INNER JOIN teacher_student ts ON ts.student_id = u.id
-            WHERE ts.teacher_id = ? AND u.role = 'student' 
-        ";
+
+    public function getAllTeachers() {
+        $query = "SELECT t.id, u.username, u.email, t.full_name, t.subject, t.gender, t.birth_date, t.phone, t.address 
+                  FROM teachers t 
+                  JOIN users u ON t.user_id = u.id";
+
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $_SESSION['user_id']);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function assignStudent($student_id) {
+    public function getTeacherById($teacher_id) {
+        $query = "SELECT t.id, u.username, u.email, t.full_name, t.subject, t.gender, t.birth_date, t.phone, t.address 
+                  FROM teachers t 
+                  JOIN users u ON t.user_id = u.id 
+                  WHERE t.id = ? 
+                  LIMIT 1";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $teacher_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function addTeacher($data) {
+        $query = "INSERT INTO users (username, password, email, role) 
+                  VALUES (?, ?, ?, 'teacher')";
+
+        $stmt = $this->conn->prepare($query);
+        $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
+
+        $stmt->bindParam(1, $data['username'], PDO::PARAM_STR);
+        $stmt->bindParam(2, $hashedPassword, PDO::PARAM_STR);
+        $stmt->bindParam(3, $data['email'], PDO::PARAM_STR);
+        
+        if ($stmt->execute()) {
+            $user_id = $this->conn->lastInsertId();
+            $teacherQuery = "INSERT INTO teachers (user_id) VALUES (?)";
+
+            $stmtTeacher = $this->conn->prepare($teacherQuery);
+            $stmtTeacher->bindParam(1, $user_id, PDO::PARAM_INT);
+
+            return $stmtTeacher->execute();
+        } else {
+            return false;
+        }
+    }
+
+    public function updateTeacher($id, $data) {
+        $query = "UPDATE users u
+                  JOIN teachers t ON u.id = t.user_id
+                  SET u.username = ?, u.email = ?, t.full_name = ?, t.subject = ?, t.gender = ?, t.birth_date = ?, t.phone = ?, t.address = ?
+                  WHERE t.id = ?";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $data['username'], PDO::PARAM_STR);
+        $stmt->bindParam(2, $data['email'], PDO::PARAM_STR);
+        $stmt->bindParam(3, $data['full_name'], PDO::PARAM_STR);
+        $stmt->bindParam(4, $data['subject'], PDO::PARAM_STR);
+        $stmt->bindParam(5, $data['gender'], PDO::PARAM_STR);
+        $stmt->bindParam(6, $data['birth_date'], PDO::PARAM_STR);
+        $stmt->bindParam(7, $data['phone'], PDO::PARAM_STR);
+        $stmt->bindParam(8, $data['address'], PDO::PARAM_STR);
+        $stmt->bindParam(9, $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    public function deleteTeacher($teacher_id) {
+        $query = "DELETE FROM users WHERE id = ? AND role = 'teacher'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $teacher_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    /* Teacher-Student Relations */
+
+    public function assignStudent($teacher_id, $student_id) {
         $query = "INSERT INTO teacher_student (teacher_id, student_id) VALUES (?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $_SESSION['user_id']);
-        $stmt->bindParam(2, $student_id);
+        $stmt->bindParam(1, $teacher_id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $student_id, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function unassignStudent($teacher_id, $student_id) {
+        $query = "DELETE FROM teacher_student WHERE teacher_id = ? AND student_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $teacher_id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $student_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function getStudentsByTeacher($teacher_id) {
+        $query = "SELECT s.id, u.username, u.email, s.full_name, s.gender, s.birth_date, s.phone, s.address
+                  FROM students s
+                  JOIN users u ON s.user_id = u.id
+                  JOIN teacher_student ts ON s.id = ts.student_id
+                  WHERE ts.teacher_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $teacher_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /* Utilities */
+
+    public function countTeachers() {
+        $query = "SELECT COUNT(*) AS total FROM teachers";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+
+    public function searchTeachers($keyword) {
+        $query = "
+            SELECT 
+                t.id, u.username, u.email, 
+                t.full_name, t.subject, t.gender, t.birth_date, t.phone, t.address
+            FROM teachers t
+            JOIN users u ON t.user_id = u.id
+            WHERE u.role = 'teacher'
+            AND (u.username LIKE ? OR u.email LIKE ?)
+        ";
+        $stmt = $this->conn->prepare($query);
+        $like = "%{$keyword}%";
+        $stmt->bindParam(1, $like, PDO::PARAM_STR);
+        $stmt->bindParam(2, $like, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTeachersByStudent($student_id) {
+        $query = "SELECT t.id, u.username, u.email, t.full_name, t.subject, t.phone 
+                  FROM teachers t 
+                  JOIN users u ON t.user_id = u.id 
+                  JOIN teacher_student ts ON t.id = ts.teacher_id 
+                  WHERE ts.student_id = ?";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $student_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

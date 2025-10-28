@@ -46,17 +46,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['delete'])) {
-    $student_id = intval($_GET['delete']);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['delete'])) {
+        $student_id = intval($_GET['delete']);
 
-    if ($student->deleteStudent($student_id)) {
-        $_SESSION['success'] = "Student deleted successfully!";
+        if ($student->deleteStudent($student_id)) {
+            $_SESSION['success'] = "Student deleted successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to delete student. Please try again.";
+        }
+        header("Location: manage_students.php");
+        exit;
+    }
+
+    if (isset($_GET['search'])) {
+        $keyword = trim($_GET['search']);
+        $students = $student->searchStudents($keyword);
     } else {
-        $_SESSION['error'] = "Failed to delete student. Please try again.";
+        $keyword = '';
     }
-    header("Location: manage_students.php");
-    exit;
-    }
+}
 
 $title = "Manage Students";
 include_once __DIR__ . '/../../includes/header.php';
@@ -66,7 +75,12 @@ include_once __DIR__ . '/../../includes/sidebar.php';
 
 <main class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Manage Students</h2>
+        <h2>Manage Students</h2>        
+            <form method="get" class="search-form d-flex align-items-center gap-2">
+                <input type="text" name="search" class="form-control" placeholder="Search by name or email..." 
+                    value="<?php echo htmlspecialchars($keyword); ?>" />
+                <button class="btn btn-primary" type="submit">Search</button>
+            </form>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
             Add Student
         </button>

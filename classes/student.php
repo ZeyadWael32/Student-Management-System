@@ -13,7 +13,7 @@ class Student extends User {
     }
     
     public function getStudentById($student_id) {
-        $query = "SELECT s.id, u.username, u.email, s.phone 
+        $query = "SELECT s.id, u.username, u.email, s.full_name, s.gender, s.birth_date, s.phone, s.address 
                   FROM students s 
                   JOIN users u ON s.user_id = u.id 
                   WHERE s.id = ?
@@ -75,7 +75,7 @@ class Student extends User {
         return $stmt->execute();
     }
 
-    /* Teacher-Student Relations */
+    /* Student-Teacher Relations */
 
     public function assignTeacher($student_id, $teacher_id) {
         $query = "INSERT INTO teacher_student (teacher_id, student_id) VALUES (?, ?)";
@@ -118,18 +118,23 @@ class Student extends User {
 
     public function searchStudents($keyword) {
         $query = "
-        SELECT * FROM users
-        WHERE role = 'student'
-        AND (username LIKE ? OR email LIKE ?)
-    ";
+            SELECT 
+                s.id, u.username, u.email, 
+                s.full_name, s.gender, s.birth_date, s.phone, s.address
+            FROM students s
+            JOIN users u ON s.user_id = u.id
+            WHERE u.role = 'student'
+            AND (u.username LIKE ? OR u.email LIKE ?)
+        ";
+
         $stmt = $this->conn->prepare($query);
-        $like = '%$keyword%';
+        $like = "%{$keyword}%";
         $stmt->bindParam(1, $like, PDO::PARAM_STR);
         $stmt->bindParam(2, $like, PDO::PARAM_STR);
         $stmt->execute();
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
 
     public function getStudentsByTeacher($teacher_id) {
         $query = "
