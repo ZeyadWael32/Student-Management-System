@@ -22,10 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Email already registered.";
     } else {
         if ($user->register($name, $password, $email, $role)) {
+            
             $loggedInUser = $user->login($email, $password); // Auto-login
             if ($loggedInUser) {
                 $_SESSION['user_id'] = $loggedInUser['id'];
-                $_SESSION['user_name'] = $loggedInUser['name'];
+                $_SESSION['user_name'] = $loggedInUser['username'];
                 $_SESSION['user_email'] = $loggedInUser['email'];
                 $_SESSION['user_role'] = $loggedInUser['role'];
             }

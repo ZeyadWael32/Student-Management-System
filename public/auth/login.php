@@ -10,9 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $password = $_POST['password'];
 
     $loggedInUser = $user->login($email, $password);
+
     if ($loggedInUser) {
         $_SESSION['user_id'] = $loggedInUser['id'];
-        $_SESSION['user_name'] = $loggedInUser['name'];
+        $_SESSION['user_name'] = $loggedInUser['username'];
         $_SESSION['user_email'] = $loggedInUser['email'];
         $_SESSION['user_role'] = $loggedInUser['role'];
         // echo "Login successful! Welcome, " . htmlspecialchars($loggedInUser['name']) . ".";

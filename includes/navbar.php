@@ -1,3 +1,8 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>  
 <style>
         * {
             margin: 0;
@@ -53,19 +58,19 @@
             font-weight: 500;
             color: #ecf0f1;
         }
-    </style>
-    <?php
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-    ?>
-    <nav class="top-navbar">
-        <a href="#" class="navbar-brand">
-            <i class="bi bi-mortarboard-fill"></i> Student Management System
-        </a>
+</style>
+
+<nav class="top-navbar">
+    <a href="#" class="navbar-brand">
+        <i class="bi bi-mortarboard-fill"></i> Student Management System
+    </a>
         
-        <div class="user-profile">
-            <span class="user-name"><?php echo isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest'; ?></span>
-            <div class="user-avatar"><?php echo isset($_SESSION['user_name']) ? strtoupper(substr(htmlspecialchars($_SESSION['user_name']),0,2)) : 'NA'; ?></div>
+    <div class="user-profile">
+        <span class="user-name">
+            <?= isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest'; ?>
+        </span>
+        <div class="user-avatar">
+            <?= isset($_SESSION['user_name']) ? strtoupper(substr(htmlspecialchars($_SESSION['user_name']), 0, 2)) : 'NA'; ?>
         </div>
-    </nav>
+    </div>
+</nav>
