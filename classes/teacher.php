@@ -4,7 +4,7 @@ require_once 'user.php';
 class Teacher extends User {
 
     public function getAllTeachers() {
-        $query = "SELECT t.id, u.username, u.email, t.full_name, t.subject, t.gender, t.birth_date, t.phone, t.address 
+        $query = "SELECT t.id AS teacher_id, u.id AS user_id, u.username, u.email, t.full_name, t.subject, t.gender, t.birth_date, t.phone, t.address 
                   FROM teachers t 
                   JOIN users u ON t.user_id = u.id";
 
@@ -54,7 +54,7 @@ class Teacher extends User {
         $query = "UPDATE users u
                   JOIN teachers t ON u.id = t.user_id
                   SET u.username = ?, u.email = ?, t.full_name = ?, t.subject = ?, t.gender = ?, t.birth_date = ?, t.phone = ?, t.address = ?
-                  WHERE t.id = ?";
+                  WHERE u.id = ?";
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $data['username'], PDO::PARAM_STR);
@@ -62,7 +62,11 @@ class Teacher extends User {
         $stmt->bindParam(3, $data['full_name'], PDO::PARAM_STR);
         $stmt->bindParam(4, $data['subject'], PDO::PARAM_STR);
         $stmt->bindParam(5, $data['gender'], PDO::PARAM_STR);
-        $stmt->bindParam(6, $data['birth_date'], PDO::PARAM_STR);
+        if ($data['birth_date'] === null) {
+            $stmt->bindValue(6, null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindParam(6, $data['birth_date'], PDO::PARAM_STR);
+        }
         $stmt->bindParam(7, $data['phone'], PDO::PARAM_STR);
         $stmt->bindParam(8, $data['address'], PDO::PARAM_STR);
         $stmt->bindParam(9, $id, PDO::PARAM_INT);

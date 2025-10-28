@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'email' => strtolower(trim($_POST['email'])),
             'full_name' => trim($_POST['full_name']),
             'gender' => $_POST['gender'],
-            'birth_date' => $_POST['birth_date'],
+            'birth_date' => !empty($_POST['birth_date']) ? $_POST['birth_date'] : null,
             'phone' => trim($_POST['phone']),
             'address' => trim($_POST['address']),
         ];
@@ -120,7 +120,7 @@ include_once __DIR__ . '/../../includes/sidebar.php';
             <?php if ($students): ?>
                 <?php foreach ($students as $student): ?>
                     <tr>
-                        <td><?= htmlspecialchars($student['id']) ?></td>
+                        <td><?= htmlspecialchars($student['student_id']) ?></td>
                         <td><?= htmlspecialchars($student['username']) ?></td>
                         <td><?= htmlspecialchars($student['email']) ?></td>
                         <td><?= htmlspecialchars($student['full_name']) ?? 'N/A' ?></td>
@@ -136,7 +136,7 @@ include_once __DIR__ . '/../../includes/sidebar.php';
                                 data-student="<?= htmlspecialchars(json_encode($student), ENT_QUOTES) ?>">
                                 Edit
                             </button>
-                            <a href="?delete=<?= $student['id'] ?>" 
+                            <a href="?delete=<?= $student['user_id'] ?>" 
                                class="btn btn-sm btn-danger" 
                                onclick="return confirm('Are you sure you want to delete this student?');">
                                Delete
@@ -258,7 +258,7 @@ document.querySelectorAll('.editBtn').forEach(button => {
     button.addEventListener('click', function() {
         const student = JSON.parse(this.getAttribute('data-student'));
         
-        document.getElementById('editStudentId').value = student.id;
+        document.getElementById('editStudentId').value = student.user_id;
         document.getElementById('editUsername').value = student.username;
         document.getElementById('editEmail').value = student.email;
         document.getElementById('editFullName').value = student.full_name || '';

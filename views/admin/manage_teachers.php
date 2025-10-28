@@ -30,9 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = [
             'username' => trim($_POST['username']),
             'email' => strtolower(trim($_POST['email'])),
+            'subject' => trim($_POST['subject']),
             'full_name' => trim($_POST['full_name']),
             'gender' => $_POST['gender'],
-            'birth_date' => $_POST['birth_date'],
+            'birth_date' => !empty($_POST['birth_date']) ? $_POST['birth_date'] : null,
             'phone' => trim($_POST['phone']),
             'address' => trim($_POST['address']),
         ];
@@ -108,6 +109,7 @@ include_once __DIR__ . '/../../includes/sidebar.php';
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Subject</th>
                 <th>Full Name</th>
                 <th>Gender</th>
                 <th>Birth Date</th>
@@ -120,9 +122,10 @@ include_once __DIR__ . '/../../includes/sidebar.php';
             <?php if ($teachers): ?>
                 <?php foreach ($teachers as $teacher): ?>
                     <tr>
-                        <td><?= htmlspecialchars($teacher['id']) ?></td>
+                        <td><?= htmlspecialchars($teacher['teacher_id']) ?></td>
                         <td><?= htmlspecialchars($teacher['username']) ?></td>
                         <td><?= htmlspecialchars($teacher['email']) ?></td>
+                        <td><?= htmlspecialchars($teacher['subject']) ?? 'N/A' ?></td>
                         <td><?= htmlspecialchars($teacher['full_name']) ?? 'N/A' ?></td>
                         <td><?= htmlspecialchars($teacher['gender']) ?? 'N/A' ?></td>
                         <td><?= htmlspecialchars($teacher['birth_date']) ?? 'N/A' ?></td>
@@ -136,7 +139,7 @@ include_once __DIR__ . '/../../includes/sidebar.php';
                                 data-teacher="<?= htmlspecialchars(json_encode($teacher), ENT_QUOTES) ?>">
                                 Edit
                             </button>
-                            <a href="?delete=<?= $teacher['id'] ?>" 
+                            <a href="?delete=<?= $teacher['user_id'] ?>" 
                                class="btn btn-sm btn-danger" 
                                onclick="return confirm('Are you sure you want to delete this teacher?');">
                                Delete
@@ -258,7 +261,7 @@ document.querySelectorAll('.editBtn').forEach(button => {
     button.addEventListener('click', function() {
         const teacher = JSON.parse(this.getAttribute('data-teacher'));
         
-        document.getElementById('editTeacherId').value = teacher.id;
+        document.getElementById('editTeacherId').value = teacher.user_id;
         document.getElementById('editUsername').value = teacher.username;
         document.getElementById('editEmail').value = teacher.email;
         document.getElementById('editFullName').value = teacher.full_name || '';
