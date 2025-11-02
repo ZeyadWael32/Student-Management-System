@@ -82,7 +82,7 @@ include_once __DIR__ . '/../../includes/sidebar.php';
                 <button class="btn btn-primary" type="submit">Search</button>
             </form>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-            Add Student
+           <i class="bi bi-plus-lg"></i> Add Student
         </button>
     </div>
 

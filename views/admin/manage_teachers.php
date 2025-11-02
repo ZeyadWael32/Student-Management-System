@@ -76,14 +76,14 @@ include_once __DIR__ . '/../../includes/sidebar.php';
 
 <main class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Manage Students</h2>        
+        <h2>Manage Teachers</h2>        
             <form method="get" class="search-form d-flex align-items-center gap-2">
                 <input type="text" name="search" class="form-control" placeholder="Search by name or email..." 
-                    value="<?php echo htmlspecialchars($keyword); ?>" />
+                    value="<?= htmlspecialchars($keyword); ?>" />
                 <button class="btn btn-primary" type="submit">Search</button>
             </form>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTeacherModal">
-            Add Teacher
+           <i class="bi bi-plus-lg"></i> Add Teacher
         </button>
     </div>
 
