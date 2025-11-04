@@ -8,6 +8,7 @@ required_role(["admin"]);
 $db = new Database();
 $course = new Course($db->conn);
 $courses = $course->getAllCourses();
+$keyword = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'add') {
