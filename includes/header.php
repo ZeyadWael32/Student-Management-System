@@ -18,7 +18,7 @@
     }
 
     main.container {
-      margin-left: 260px;
+      margin-left: 390px;
       padding-top: 70px;
     }
    
