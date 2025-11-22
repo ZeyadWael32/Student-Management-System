@@ -85,5 +85,21 @@ class Grade {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAverageGrade() {
+        $query = "SELECT AVG(grade) AS average_grade FROM grades";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['average_grade'];
+    }
+
+    public function getAverageGradeLastMonth() {
+        $query = "SELECT AVG(grade) AS average_grade
+                  FROM grades
+                  WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['average_grade'];
+    }
 }
 ?>

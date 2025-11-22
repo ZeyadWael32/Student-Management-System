@@ -153,5 +153,12 @@ class Student extends User {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getStudentCountLastMonth() {
+        $query = "SELECT COUNT(*) AS total FROM students WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];}
 }
 ?>

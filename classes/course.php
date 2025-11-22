@@ -59,5 +59,21 @@ class Course {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getTotalCourse() {
+        $query = "SELECT COUNT(*) AS total FROM courses";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+
+    public function getCourseCountLastMonth() {
+        $query = "SELECT COUNT(*) AS total FROM courses WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
 }
 ?>

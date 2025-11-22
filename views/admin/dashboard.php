@@ -1,8 +1,23 @@
 <?php
 require_once __DIR__ . '/../../config/init.php';
+require_once __DIR__ . '/../../classes/dashboard.php';
 
 require_login();
 required_role(["admin"]);
+
+$db = new Database();
+$dashboard = new AdminDashboard($db->conn);
+$stats = $dashboard->getStats();
+
+$studentCount = $stats['studentCount'];
+$courseCount = $stats['courseCount'];
+$averageGrade = $stats['averageGrade'];
+$enrollmentCount = $stats['enrollmentCount'];
+
+$studentGrowth = $stats['studentGrowth'];
+$courseGrowth = $stats['courseGrowth'];
+$gradeChange = $stats['gradeChange'];
+$enrollmentGrowth = $stats['enrollmentGrowth'];
 
 $title = "Dashboard";
 include_once __DIR__ . '/../../includes/header.php';
@@ -128,7 +143,6 @@ include_once __DIR__ . '/../../includes/sidebar.php';
 </style>
 <main class="container">
     <div class="mt-4">
-    <h2 class="mb-4">Welcome back, <?= htmlspecialchars($_SESSION['user_name']) ?>! 👋</h1>
 
     <!-- Stats Cards -->
     <div class="row g-4 mb-4">
