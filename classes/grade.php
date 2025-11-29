@@ -27,7 +27,7 @@ class Grade {
                   LEFT JOIN teachers t ON c.teacher_id = t.id
                   LEFT JOIN users te ON t.user_id = te.id
                   ORDER BY g.id DESC";
-    $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

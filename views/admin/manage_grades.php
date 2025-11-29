@@ -91,72 +91,7 @@ include_once __DIR__ . '/../../includes/sidebar.php';
     </tbody>
 </main>
 
-<!-- Add Grade Modal -->
- <div class="modal fade" id="addGradeModal" tabindex="-1" aria-labelledby="addGradeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addGradeModalLabel">Add New Grade</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <input type="hidden" name="action" value="add">
-                </div>
-
-                <div class="mb-2">
-                    <label class="form-label">Grade</label>
-                    <input type="text" name="grade" class="form-control" required>
-                </div>
-
-                <div class="mb-2">
-                    <label class="form-label">Comments</label>
-                    <textarea name="comments" class="form-control" rows="3"></textarea>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Add Grade</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Grade Modal -->
- <div class="modal fade" id="editGradeModal" tabindex="-1" aria-labelledby="editGradeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editGradeModalLabel">Edit Grade</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <div class="modal-body">
-                    <input type="hidden" name="action" value="update">
-                    <input type="hidden" name="course_id" id="editCourseId">
-    
-                    <div class="mb-2">
-                        <label class="form-label">Grade</label>
-                        <input type="text" name="grade" id="editGrade" class="form-control" required>
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label">Comments</label>
-                        <input type="text" name="comments" id="editComments" class="form-control" required>
-                    </div> 
-                </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Update Grade</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<?php include_once __DIR__ . '/../../includes/modals.php'; ?>
 
 <script>
     document.querySelectorAll('.editBtn').forEach(button => {

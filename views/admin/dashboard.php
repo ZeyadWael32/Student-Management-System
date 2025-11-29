@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/init.php';
 require_once __DIR__ . '/../../classes/dashboard.php';
+require_once __DIR__ . '/../../classes/student.php';
 
 require_login();
 required_role(["admin"]);
@@ -19,13 +20,87 @@ $courseGrowth = $stats['courseGrowth'];
 $gradeChange = $stats['gradeChange'];
 $enrollmentGrowth = $stats['enrollmentGrowth'];
 
+$enrollmentChartData = $dashboard->getEnrollmentChartData();
+
+$student = new Student($db->conn);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action']) && $_POST['action'] === 'add') {
+        $data = [
+            'username' => trim($_POST['username']),
+            'password' => $_POST['password'],
+            'email' => strtolower(trim($_POST['email'])),   
+        ];
+        if ($student->addStudent($data)) {
+            $_SESSION['success'] = "Student added successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to add student. Please try again.";
+        }
+        header("Location: manage_students.php");
+        exit;
+    }
+
+    if (isset($_POST['generate_report'])) {
+        $type = $_POST['report_type'];
+        $start = $_POST['start_date'];
+        $end = $_POST['end_date'];
+
+        $reportData = $dashboard->generateReport($type, $start, $end);
+
+        if (!empty($reportData)) {
+            $_SESSION['success'] = "Report for " . ucfirst($type) . " from $start to $end generated successfully!";
+            $_SESSION['report_data'] = $reportData;
+        } else {
+            $_SESSION['error'] = "No data found for the selected criteria.";
+            $_SESSION['report_data'] = [];
+        }
+        
+        header("Location: dashboard.php");
+        exit;
+    }
+
+    if (isset($_POST['action']) && $_POST['action'] === 'mark_attendance') {
+        $student_id = intval($_POST['student_id']);
+        $date = $_POST['date'];
+        $status = $_POST['status'];
+
+        $attendanceResult = $dashboard->markAttendance($student_id, $date, $status);
+
+        if (!empty($attendanceResult)) {
+            $_SESSION['success'] = "Attendance marked successfully for student ID $student_id on $date.";
+        } else {
+            $_SESSION['error'] = "Failed to mark attendance. Please try again.";
+        }
+
+        header("Location: dashboard.php");
+        exit;   
+    }
+
+    if (isset($_POST['send_announcement'])) {
+        $title = trim($_POST['title']);
+        $message = trim($_POST['message']);
+        $audience = $_POST['audience'];
+
+        $announcementResult = $dashboard->sendAnnouncement($title, $message, $audience);
+
+        if ($announcementResult) {
+            $_SESSION['success'] = "Announcement sent successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to send announcement. Please try again.";
+        }
+
+        header("Location: dashboard.php");
+        exit;   
+    }
+}
+
 $title = "Dashboard";
 include_once __DIR__ . '/../../includes/header.php';
 include_once __DIR__ . '/../../includes/navbar.php';
 include_once __DIR__ . '/../../includes/sidebar.php';
 ?>
 <style>
-            .stats-card {
+        .stats-card {
             background: white;
             border-radius: 10px;
             padding: 25px;
@@ -140,9 +215,29 @@ include_once __DIR__ . '/../../includes/sidebar.php';
             font-weight: 600;
             color: #2c3e50;
         }
+
+        #enrollmentChart {
+            margin-top: 70px;
+        }
 </style>
 <main class="container">
     <div class="mt-4">
+
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            <?= htmlspecialchars($_SESSION['success']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+            <?= htmlspecialchars($_SESSION['error']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
 
     <!-- Stats Cards -->
     <div class="row g-4 mb-4">
@@ -290,6 +385,10 @@ include_once __DIR__ . '/../../includes/sidebar.php';
     </div>
 </main>
 
+
+
+<?php include_once __DIR__ . '/../../includes/modals.php'; ?>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <script>
     const ctx = document.getElementById('enrollmentChart').getContext('2d');
@@ -319,5 +418,13 @@ include_once __DIR__ . '/../../includes/sidebar.php';
             }
         }
     });
+
+    setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+    });
+}, 4000);
 </script>
 <?php include_once __DIR__ . '/../../includes/footer.php'; ?>
