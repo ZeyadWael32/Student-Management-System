@@ -143,5 +143,34 @@ class AdminDashboard extends Dashboard {
 
         return $stmt->execute();
     }
+
+    public function addActivity($title, $description){
+    $query = "INSERT INTO activities (title, description) 
+              VALUES (?, ?)";
+    $stmt = $this->conn->prepare($query);
+    return $stmt->execute([$title, $description]);
+    }
+
+    public function getRecentActivities(){
+    $query = "SELECT * FROM activities ORDER BY created_at DESC LIMIT 10";
+    $stmt = $this->conn->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTodaySchedule(){
+    $today = date('l'); // Monday, Tuesday, etc.
+
+    $query = "SELECT name, teacher, location, time 
+              FROM class_schedule 
+              WHERE day_of_week = ? 
+              ORDER BY time ASC";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->execute([$today]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
 ?>

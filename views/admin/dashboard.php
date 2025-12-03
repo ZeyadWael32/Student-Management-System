@@ -8,6 +8,7 @@ required_role(["admin"]);
 
 $db = new Database();
 $dashboard = new AdminDashboard($db->conn);
+$student = new Student($db->conn);
 $stats = $dashboard->getStats();
 
 $studentCount = $stats['studentCount'];
@@ -22,7 +23,9 @@ $enrollmentGrowth = $stats['enrollmentGrowth'];
 
 $enrollmentChartData = $dashboard->getEnrollmentChartData();
 
-$student = new Student($db->conn);
+$recentActivities = $dashboard->getRecentActivities();
+
+$todayClasses = $dashboard->getTodaySchedule();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'add') {
